@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art Gallery: Stunning Pixel Artworks</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            background-color: #222;
+            color: #fff;
+        }
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #000;
+            color: #0f0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 255, 0, 0.3);
+        }
+        header {
+            text-align: center;
+            padding: 1rem;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px #0f0;
+        }
+        #search-area {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            background-color: #111;
+        }
+        #search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        #search-input {
+            padding: 0.5rem;
+            font-size: 1rem;
+            width: 300px;
+            background-color: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+        }
+        #search-button, #auto-scroll-toggle {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background-color: #0f0;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+        #common-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .tag-button {
+            padding: 0.3rem 0.7rem;
+            font-size: 0.9rem;
+            background-color: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+            cursor: pointer;
+            border-radius: 15px;
+        }
+        #artwork-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 1rem;
+            margin-top: 240px;
+        }
+        .artwork {
+            position: relative;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .artwork:hover {
+            transform: scale(1.05);
+        }
+        .artwork img {
+            width: 200px;
+            height: 200px;
+            image-rendering: pixelated;
+        }
+        .artwork-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 255, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .artwork:hover .artwork-overlay {
+            opacity: 1;
+        }
+        .artwork-button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #0f0;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        @media (hover: none) {
+            .artwork-overlay {
+                display: none;
+            }
+        }
+        #modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            overflow: auto;
+        }
+        #modal-content {
+            background-color: #000;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #0f0;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+        }
+        #modal-image {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+        #modal-tags {
+            margin-top: 15px;
+            font-style: italic;
+            color: #0f0;
+        }
+        #modal-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #0f0;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #close-modal {
+            color: #0f0;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #close-modal:hover,
+        #close-modal:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2rem;
+            color: #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-header">
+        <header>
+            <h1>Pixel Art Gallery: Stunning Pixel Artworks</h1>
+        </header>
+        <div id="search-area">
+            <div id="search-bar">
+                <input type="text" id="search-input" placeholder="Search by tags...">
+                <button id="search-button">Search</button>
+                <button id="auto-scroll-toggle">Disable Auto-scroll</button>
+            </div>
+            <div id="common-tags">
+                <button class="tag-button" data-tag="landscape">Landscape</button>
+                <button class="tag-button" data-tag="character">Character</button>
+                <button class="tag-button" data-tag="sci-fi">Sci-Fi</button>
+                <button class="tag-button" data-tag="fantasy">Fantasy</button>
+                <button class="tag-button" data-tag="retro">Retro</button>
+                <button class="tag-button" data-tag="animated">Animated</button>
+                <button class="tag-button" data-tag="isometric">Isometric</button>
+                <button class="tag-button" data-tag="8-bit">8-bit</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="artwork-container"></div>
+    
+    <div id="loading">Loading more artworks...</div>
+    
+    <div id="modal">
+        <div id="modal-content">
+            <span id="close-modal">&times;</span>
+            <img id="modal-image" src="" alt="Enlarged artwork">
+            <p id="modal-tags"></p>
+            <button id="modal-button"></button>
+        </div>
+    </div>
+
+    <script>
+        // Replace with your GitHub username, repository name, and branch
+        const githubUser = 'yourGithubUsername';
+        const githubRepo = 'pixel-art-gallery';
+        const githubBranch = 'main';
+        const artworksPath = 'artworks';
+
+        let allArtworks = [];
+        let displayedArtworks = [];
+        let page = 1;
+        let isLoading = false;
+        let autoScrollInterval;
+
+        const container = document.getElementById('artwork-container');
+        const modal = document.getElementById('modal');
+        const modalImage = document.getElementById('modal-image');
+        const modalTags = document.getElementById('modal-tags');
+        const modalButton = document.getElementById('modal-button');
+        const closeModal = document.getElementById('close-modal');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const autoScrollToggle = document.getElementById('auto-scroll-toggle');
+        const loading = document.getElementById('loading');
+        const tagButtons = document.querySelectorAll('.tag-button');
+
+        async function fetchArtworks() {
+            const apiUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${artworksPath}`;
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            
+            return data
+                .filter(file => file.type === 'file' && file.name.match(/\.(png|gif)$/i))
+                .map(file => {
+                    const [name, ...tagsParts] = file.name.split('_');
+                    const tags = tagsParts.join('_').split('.')[0].split('-');
+                    return {
+                        id: file.sha,
+                        filename: file.name,
+                        src: file.download_url,
+                        largeSrc: file.download_url,
+                        tags: tags,
+                        free: !file.name.toLowerCase().includes('paid')
+                    };
+                });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        async function loadArtworks() {
+            if (isLoading) return;
+            isLoading = true;
+            loading.style.display = 'block';
+
+            if (allArtworks.length === 0) {
+                allArtworks = await fetchArtworks();
+                shuffleArray(allArtworks);
+            }
+
+            const artworksPerPage = 12;
+            let newArtworks = [];
+
+            for (let i = 0; i < artworksPerPage; i++) {
+                if (displayedArtworks.length === allArtworks.length) {
+                    displayedArtworks = [];
+                }
+
+                let artwork;
+                do {
+                    artwork = allArtworks[Math.floor(Math.random() * allArtworks.length)];
+                } while (displayedArtworks.includes(artwork));
+
+                newArtworks.push(artwork);
+                displayedArtworks.push(artwork);
+            }
+
+            renderArtworks(newArtworks);
+            
+            page++;
+            isLoading = false;
+            loading.style.display = 'none';
+        }
+
+        function renderArtworks(artworkList) {
+            artworkList.forEach(artwork => {
+                const div = document.createElement('div');
+                div.className = 'artwork';
+                div.innerHTML = `
+                    <img src="${artwork.src}" alt="Pixel Artwork">
+                    <div class="artwork-overlay">
+                        <button class="artwork-button">${artwork.free ? 'Download' : 'Purchase'}</button>
+                    </div>
+                `;
+                div.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('artwork-button')) {
+                        if (artwork.free) {
+                            downloadArtwork(artwork);
+                        } else {
+                            window.open('https://example.com/purchase', '_blank');
+                        }
+                    } else {
+                        openModal(artwork);
+                    }
+                });
+                container.appendChild(div);
+            });
+        }
+
+        function downloadArtwork(artwork) {
+            const link = document.createElement('a');
+            link.href = artwork.largeSrc;
+            link.download = artwork.filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function openModal(artwork) {
+            modalImage.src = artwork.largeSrc;
+            modalTags.textContent = `Tags: ${artwork.tags.join(', ')}`;
+            if (artwork.free) {
+                modalButton.textContent = 'Download';
+                modalButton.onclick = () => downloadArtwork(artwork);
+            } else {
+                modalButton.textContent = 'Purchase';
+                modalButton.onclick = () => window.open('https://example.com/purchase', '_blank');
+            }
+            modal.style.display = 'block';
+        }
+
+        closeModal.onclick = () => {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function filterArtworks(searchTerm) {
+            const filteredArtworks = allArtworks.filter(artwork => 
+                artwork.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+            container.innerHTML = '';
+            displayedArtworks = [];
+            shuffleArray(filteredArtworks);
+            renderArtworks(filteredArtworks.slice(0, 12));
+            displayedArtworks = filteredArtworks.slice(0, 12);
+        }
+
+        searchButton.addEventListener('click', () => {
+            filterArtworks(searchInput.value);
+        });
+
+        tagButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterArtworks(button.dataset.tag);
+            });
+        });
+
+        function toggleAutoScroll() {
+            if (autoScrollToggle.textContent === 'Enable Auto-scroll') {
+                autoScrollToggle.textContent = 'Disable Auto-scroll';
+                startAutoScroll();
+            } else {
+                autoScrollToggle.textContent = 'Enable Auto-scroll';
+                stopAutoScroll();
+            }
+        }
+
+        function startAutoScroll() {
+            autoScrollInterval = setInterval(() => {
+                window.scrollBy(0, 1);
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                    loadArtworks();
+                }
+            }, 20);
+        }
+
+        function stopAutoScroll() {
+            clearInterval(autoScrollInterval);
+        }
+
+        function checkScroll() {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+                loadArtworks();
+            }
+        }
+
+        autoScrollToggle.addEventListener('click', toggleAutoScroll);
+        window.addEventListener('scroll', checkScroll);
+
+        // Initial load and start auto-scroll
+        loadArtworks();
+        startAutoScroll();
+    </script>
+</body>
+</html>
