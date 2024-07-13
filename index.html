@@ -234,7 +234,7 @@
         const githubUser = 'azaspravidia';
         const githubRepo = 'pixel-art-gallery';
         const githubBranch = 'main';
-        const artworksPath = 'artworks';
+        const artworksPath = 'contents'; //'artworks';
 
         let allArtworks = [];
         let displayedArtworks = [];
@@ -255,7 +255,7 @@
         const tagButtons = document.querySelectorAll('.tag-button');
 
         async function fetchArtworks() {
-            const apiUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/contents`; ///${artworksPath}`;
+            const apiUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${artworksPath}`;
             const response = await fetch(apiUrl);
             const data = await response.json();
             
