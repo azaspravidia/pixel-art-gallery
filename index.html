@@ -60,6 +60,7 @@
             background-color: #000;
             color: #0f0;
             border: 1px solid #0f0;
+            box-sizing: border-box;
         }
         #search-button, #auto-scroll-toggle {
             padding: 0.5rem 1rem;
@@ -69,6 +70,7 @@
             border: none;
             cursor: pointer;
             margin-left: 0.5rem;
+            box-sizing: border-box;
         }
         #common-tags {
             display: flex;
@@ -207,6 +209,31 @@
             }
             #search-area {
                 display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 1rem;
+            }
+            #search-bar {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+            #search-input, #search-button, #auto-scroll-toggle {
+                width: 100%;
+                margin: 0.5rem 0;
+                box-sizing: border-box;
+            }
+            #search-input {
+                max-width: none;
+            }
+            #common-tags {
+                justify-content: flex-start;
+            }
+            .tag-button {
+                margin: 0.25rem;
             }
             #artwork-container {
                 margin-top: 80px;
@@ -260,14 +287,12 @@
     </div>
 
     <script>
-        // ... (previous JavaScript code remains the same)
-
         const menuToggle = document.getElementById('menu-toggle');
         const searchArea = document.getElementById('search-area');
 
         menuToggle.addEventListener('click', () => {
             if (searchArea.style.display === 'none' || searchArea.style.display === '') {
-                searchArea.style.display = 'flex';
+                searchArea.style.display = 'block';
             } else {
                 searchArea.style.display = 'none';
             }
