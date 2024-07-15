@@ -25,11 +25,22 @@
         header {
             text-align: center;
             padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         h1 {
             margin: 0;
             font-size: 2.5rem;
             text-shadow: 0 0 10px #0f0;
+        }
+        #menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #0f0;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
         #search-area {
             display: flex;
@@ -190,12 +201,31 @@
             font-size: 1.2rem;
             color: #0f0;
         }
+        @media screen and (max-width: 768px) {
+            #menu-toggle {
+                display: block;
+            }
+            #search-area {
+                display: none;
+            }
+            #artwork-container {
+                margin-top: 80px;
+            }
+            .artwork img {
+                width: 150px;
+                height: 150px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="fixed-header">
         <header>
-            <h1>Pixel Art Gallery: Stunning Pixel Artworks</h1>
+            <h1>Pixel Art Gallery</h1>
+            <button id="menu-toggle">☰</button>
         </header>
         <div id="search-area">
             <div id="search-bar">
@@ -230,7 +260,30 @@
     </div>
 
     <script>
-        // Replace with your GitHub username, repository name, and branch
+        // ... (previous JavaScript code remains the same)
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const searchArea = document.getElementById('search-area');
+
+        menuToggle.addEventListener('click', () => {
+            if (searchArea.style.display === 'none' || searchArea.style.display === '') {
+                searchArea.style.display = 'flex';
+            } else {
+                searchArea.style.display = 'none';
+            }
+        });
+
+        function handleResize() {
+            if (window.innerWidth > 768) {
+                searchArea.style.display = 'flex';
+            } else {
+                searchArea.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Call once to set initial state
+
         const githubUser = 'azaspravidia';
         const githubRepo = 'pixel-art-gallery';
         const githubBranch = 'main';
